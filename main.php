@@ -41,9 +41,8 @@ function preShow( $arr, $returnAsString=false ) {
     /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        padding: 20px;
         height: 50%;
-          width: 100%;
+          width: 50%;
       }
       html, body {
         height: 100%;
@@ -53,17 +52,6 @@ function preShow( $arr, $returnAsString=false ) {
     </style>
 
 <body>
-    <div id="map"></div>
-    <script>
-        var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -37.8136, lng: 144.9631},
-          zoom: 4
-        });
-      }
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7ApZYfrCx_mmzhKjvQlDiOAkaTLAQcz8&callback=initMap"></script>
     <h1>Steam Statics Explorer</h1>
     <div class="form">
         <form method="POST" action="main.php">
@@ -76,19 +64,32 @@ function preShow( $arr, $returnAsString=false ) {
         <?php
 if(isset($_POST['submit'])){
     if(!empty($_POST['steamid'])){
-        echo "<label> Steamid </label>";
-    print_r($decoded->response->players[0]->steamid);
-        echo "<label> personaname </label>";
-    print_r($decoded->response->players[0]->personaname);
-        echo "<label> loccountrycode </label>";
-    print_r($decoded->response->players[0]->loccountrycode);
-        echo "<label> avatarmedium </label>";
-    print_r($decoded->response->players[0]->avatarmedium);
-        echo "<label> profileurl </label>";
-    print_r($decoded->response->players[0]->profileurl);
+        echo "<label><strong> Steamid </strong></label>";
+    echo $decoded->response->players[0]->steamid. "<br />";
+        echo "<label><strong> personaname </strong></label> <br />";
+   echo $decoded->response->players[0]->personaname . "<br />";
+        echo "<label><strong> loccountrycode </strong></label> <br />";
+   echo $decoded->response->players[0]->loccountrycode. "<br />";
+        echo "<label><strong> avatarmedium </strong></label> <br />";
+    echo $decoded->response->players[0]->avatarmedium. "<br />";
+        echo "<label><strong> profileurl </strong></label> <br />";
+    echo $decoded->response->players[0]->profileurl. "<br />";
     }
 }
     ?>
+         <div class="map">
+    <div id="map"></div>
+        </div>
+    <script>
+        var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -37.8136, lng: 144.9631},
+          zoom: 4
+        });
+      }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7ApZYfrCx_mmzhKjvQlDiOAkaTLAQcz8&callback=initMap"></script>
     </div>
 </body>
 </html>
