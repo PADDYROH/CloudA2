@@ -2,6 +2,15 @@ runtime: php55
 api_version: 1
 
 handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+  
+- url: /script.js
+  script: script.js
+  
+- url: /main.php
+  script: main.php  
+
 - url: /.*
   script: main.php
   
