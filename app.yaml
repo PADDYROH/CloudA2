@@ -10,7 +10,13 @@ handlers:
   
 - url: /main.php
   script: main.php  
+ 
+- url: /login.php
+  script: login.php
+  
+- url: /register.php
+  script: register.php
 
 - url: /.*
-  script: main.php
+  script: login.php
   

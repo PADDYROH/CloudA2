@@ -1,12 +1,15 @@
 <!--html/php-->
 <?php
-if(isset($_POST['submit'])){
-    if(!empty($_POST['steamid'])){
+preShow($_SESSION["user"]);
+
+if(isset($_POST['submit1'])){
+    if(!empty($_POST['usersteamid'])){
 ini_set("allow_url_fopen", 1);$jsonDecode = json_decode($jsonData, TRUE);
         //https://api.steampowered.com/ISteamApps/GetAppList/v2/?minlength=300&key=C1A9D93B831592B9BA3AF5A0D7F24CD9
 $csgo_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=730&count=10&maxlength=300&format=json';
 $rl_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=252950&count=10&maxlength=300&format=json';
-$user_url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids='.$_POST['steamid'];      
+$user_url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids='.$_POST['usersteamid'];   
+$userStats_url = 'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid='.$_POST['usersteamid'].'&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json';
         
 $json = file_get_contents($user_url);
 file_put_contents('gs://a2cloud-bucket/steamusers.json', $json);
@@ -58,12 +61,12 @@ function preShow( $arr, $returnAsString=false ) {
             <label>Enter: Steam ID</label>
             <p>example steam id: 76561198096743032</p>
             <br>
-            <input type='text' id='steamid' name='steamid'>
-            <button type='submit' id='submit' name='submit'>Search</button>
+            <input type='text' id='usersteamid' name='usersteamid'>
+            <button type='submit' id='submit1' name='submit1'>Search</button>
         </form>
         <?php
-if(isset($_POST['submit'])){
-    if(!empty($_POST['steamid'])){
+if(isset($_POST['submit1'])){
+    if(!empty($_POST['usersteamid'])){
         echo "<label><strong> Steamid </strong></label>";
     echo $decoded->response->players[0]->steamid. "<br />";
         echo "<label><strong> personaname </strong></label> <br />";
@@ -74,6 +77,9 @@ if(isset($_POST['submit'])){
     echo $decoded->response->players[0]->avatarmedium. "<br />";
         echo "<label><strong> profileurl </strong></label> <br />";
     echo $decoded->response->players[0]->profileurl. "<br />";
+    
+            //us: 76561198108540186
+            //au: 76561198096743032
     }
 }
     ?>
