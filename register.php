@@ -22,12 +22,12 @@ session_start();
     <script type="text/jscript">
         function CheckPassword() {
             password = document.getElementById('password').value;
-            if (password.length < 6) {
-                document.getElementById('submit').disabled = true;
-                document.getElementById('submit').innerHTML = "Register";
+            if (password.length < 1) {
+                document.getElementById('register').disabled = true;
+                document.getElementById('register').innerHTML = "Register";
             } else {
-                document.getElementById('submit').disabled = false;
-                document.getElementById('submit').innerHTML = "Register";
+                document.getElementById('register').disabled = false;
+                document.getElementById('register').innerHTML = "Register";
             }
         }
         

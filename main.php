@@ -7,8 +7,8 @@ $csgo_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=7
 $rl_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=252950&count=10&maxlength=300&format=json'; 
 $userStats_url = 'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid='.$_SESSION['steamid'].'&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json';
  
-$jsonStats = file_get_contents($userStats_url);
-        file_put_contents('gs://a2cloud-bucket/steamusers.json', $jsonStats);
+        $jsonStats = file_get_contents($userStats_url);
+        file_put_contents('gs://a2cloud-bucket/userStats.json', $jsonStats);
         $userstatsdecoded = json_decode($jsonStats);
 
 //preShow($decoded);
