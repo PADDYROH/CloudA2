@@ -17,7 +17,7 @@ session_start();
         <label>SteamID:</label>
         <input type="text" name="steamid" id="steamid">
         <br /><br />
-        <button id="submit" type="submit" onclick="IsEmpty()" disabled>Register</button>
+        <button id="register" type="submit" onclick="IsEmpty()" disabled>Register</button>
     </form>
     <script type="text/jscript">
         function CheckPassword() {

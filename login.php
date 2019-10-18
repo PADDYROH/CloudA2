@@ -1,8 +1,5 @@
 <?php
 session_start();
-if (!isset($_POST['usernamel'])){
-unset($_SESSION["username"]);
-}
 ?>
 <html>
 
@@ -42,8 +39,6 @@ unset($_SESSION["username"]);
         "password" => $_POST['password'],
         "steamid" => $_POST['steamid']);
     }
-    
-        //preShow($user);
     //LOGIN-----------------------------------------------------    
     if(!empty( $_POST['usernamel'])){
     $_SESSION["username"] = $_POST['usernamel'];
@@ -57,30 +52,18 @@ unset($_SESSION["username"]);
            // preShow($array);
             if ( $array['username'] == $_POST['usernamel']){
                 if($array['password'] == $_POST['passwordl'] ){
-                $loginuser = array(
-                "username" => $array['username'],
-                "password" => $array['password'],
-                "steamid" => $array['steamid']);
-                    echo "This is logged in user";
-    preShow($loginuser);
-                    $_SESSION['user'] = $loginuser;
-                    echo "session made";
-    preShow($_SESSION['user']);
                 $exist = 1;
+                    $_SESSION['steamid'] = $array['steamid'];
+                    //echo $array['steamid'];
                 }
             }
             }
-        
     if ($exist == 1){
-           //echo "USER SUCCESSFULLY SIGNED IN......................................";
-        //preShow($_SESSION["user"]);
-         //echo "<script>location.href='main.php';</script>";
+         echo "<script>location.href='main.php';</script>";
     }
        if ($exist == 0){
     }
         }
-    
-    
          //REGISTER-------------------------------------------
     if (!empty($_POST['username'])){
             $exist = 0;
@@ -109,8 +92,7 @@ unset($_SESSION["username"]);
     }
     }
     
-
-
+    //Display array function-------------------------------------------
 function preShow( $arr, $returnAsString=false ) {
   $ret  = '<pre>' . print_r($arr, true) . '</pre>';
   if ($returnAsString)

@@ -1,22 +1,18 @@
 <!--html/php-->
 <?php
-preShow($_SESSION["user"]);
+session_start();
 
-if(isset($_POST['submit1'])){
-    if(!empty($_POST['usersteamid'])){
 ini_set("allow_url_fopen", 1);$jsonDecode = json_decode($jsonData, TRUE);
-        //https://api.steampowered.com/ISteamApps/GetAppList/v2/?minlength=300&key=C1A9D93B831592B9BA3AF5A0D7F24CD9
 $csgo_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=730&count=10&maxlength=300&format=json';
-$rl_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=252950&count=10&maxlength=300&format=json';
-$user_url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids='.$_POST['usersteamid'];   
-$userStats_url = 'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid='.$_POST['usersteamid'].'&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json';
-        
-$json = file_get_contents($user_url);
-file_put_contents('gs://a2cloud-bucket/steamusers.json', $json);
-$decoded = json_decode($json);
+$rl_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=252950&count=10&maxlength=300&format=json'; 
+$userStats_url = 'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid='.$_SESSION['steamid'].'&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json';
+ 
+$jsonStats = file_get_contents($userStats_url);
+        file_put_contents('gs://a2cloud-bucket/steamusers.json', $jsonStats);
+        $userstatsdecoded = json_decode($jsonStats);
+
 //preShow($decoded);
-}
-}
+
 
 function preShow( $arr, $returnAsString=false ) {
   $ret  = '<pre>' . print_r($arr, true) . '</pre>';
@@ -55,34 +51,64 @@ function preShow( $arr, $returnAsString=false ) {
     </style>
 
 <body>
-    <h1>Steam Statics Explorer</h1>
-    <div class="form">
-        <form method="POST" action="main.php">
-            <label>Enter: Steam ID</label>
-            <p>example steam id: 76561198096743032</p>
-            <br>
-            <input type='text' id='usersteamid' name='usersteamid'>
-            <button type='submit' id='submit1' name='submit1'>Search</button>
-        </form>
-        <?php
-if(isset($_POST['submit1'])){
-    if(!empty($_POST['usersteamid'])){
-        echo "<label><strong> Steamid </strong></label>";
-    echo $decoded->response->players[0]->steamid. "<br />";
-        echo "<label><strong> personaname </strong></label> <br />";
-   echo $decoded->response->players[0]->personaname . "<br />";
-        echo "<label><strong> loccountrycode </strong></label> <br />";
-   echo $decoded->response->players[0]->loccountrycode. "<br />";
-        echo "<label><strong> avatarmedium </strong></label> <br />";
-    echo $decoded->response->players[0]->avatarmedium. "<br />";
-        echo "<label><strong> profileurl </strong></label> <br />";
-    echo $decoded->response->players[0]->profileurl. "<br />";
+    <?php
+    if(isset($_SESSION['username'])){
+    if(!empty($_SESSION['steamid'])){
+        $steamuser = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids='.$_SESSION['steamid'];  
+        $json = file_get_contents($steamuser);
+        file_put_contents('gs://a2cloud-bucket/steamusers.json', $json);
+        $userdecoded = json_decode($json);
+        
+    echo "<h1>" . $userdecoded->response->players[0]->personaname ."</h1>";
+         echo "<label><strong> Steam ID: </strong></label>";
+    echo $userdecoded->response->players[0]->steamid. "<br />";
+        echo "<label><strong> Username: </strong></label> <br />";
+   echo $userdecoded->response->players[0]->personaname . "<br />";
+        echo "<label><strong> Country: </strong></label> <br />";;
+   echo $userdecoded->response->players[0]->loccountrycode. "<br />";
+        echo "<label><strong> Profile Picture: </strong></label> <br />";
+    echo '<img src= '.$userdecoded->response->players[0]->avatarmedium . "><br />";
+        echo "<label><strong> Profile url: </strong></label> <br />";
+    echo '<a href=" '. $userdecoded->response->players[0]->profileurl.'">' . $userdecoded->response->players[0]->profileurl.' </a> <br />';
     
             //us: 76561198108540186
             //au: 76561198096743032
     }
 }
     ?>
+    <h2>Find Steam Player</h2>
+    <div class="form">
+        <form method="POST" action="main.php">
+            <label>Enter: Steam ID</label>
+            <br>
+            <input type='text' id='usersteamid' name='usersteamid'>
+            <button type='submit' id='submit1' name='submit1'>Search</button>
+            <p><i>example steam id: 76561198096743032</i></p>
+        </form>
+        <?php
+        if(isset($_POST['submit1'])){
+    if(!empty($_POST['usersteamid'])){
+        $user_url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids='.$_POST['usersteamid'];   
+        $json = file_get_contents($user_url);
+        $decoded = json_decode($json);
+        //preShow($decoded);
+        
+        echo "<label><strong> Steam ID: </strong></label>";
+    echo $decoded->response->players[0]->steamid. "<br />";
+        echo "<label><strong> Username: </strong></label> <br />";
+   echo $decoded->response->players[0]->personaname . "<br />";
+        echo "<label><strong> Country: </strong></label> <br />";
+   echo $decoded->response->players[0]->loccountrycode. "<br />";
+        echo "<label><strong> Profile Picture: </strong></label> <br />";
+     echo '<img src= '.$decoded->response->players[0]->avatarmedium . "><br />";
+        echo "<label><strong> Profile url: </strong></label> <br />";
+    echo '<a href=" '. $decoded->response->players[0]->profileurl.'">' . $decoded->response->players[0]->profileurl.' </a> <br />';
+    
+            //us: 76561198108540186
+            //au: 76561198096743032
+    }
+}
+        ?>
          <div class="map">
     <div id="map"></div>
         </div>
