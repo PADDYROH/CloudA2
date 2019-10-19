@@ -7,7 +7,7 @@ session_start();
 
     <h2>Register</h2>
 
-    <form action="login.php" name="register" method="POST" onsubmit= "return validateform()" oninput="CheckPassword()">
+    <form action="login.php" name="register" method="POST" onsubmit="return validateform()" oninput="CheckPassword()">
         <label>Username:</label>
         <input type="text" name="username" id="username">
         <br /><br />
@@ -18,6 +18,7 @@ session_start();
         <input type="text" name="steamid" id="steamid">
         <br /><br />
         <button id="register" type="submit" onclick="IsEmpty()" disabled>Register</button>
+        <p>Return to <a href="Login.php">Login</a></p><br>
     </form>
     <p><i>example steam id: 76561198096743032</i></p>
     <script type="text/jscript">
@@ -31,14 +32,15 @@ session_start();
                 document.getElementById('register').innerHTML = "Register";
             }
         }
-        
-        function validateform(){
-        var x = document.forms["register"]["username"].value;
-        if(x==""){
-        alert ("User name or password cannot be empty");
-        return false;
+
+        function validateform() {
+            var x = document.forms["register"]["username"].value;
+            if (x == "") {
+                alert("User name or password cannot be empty");
+                return false;
+            }
         }
-        }
+
     </script>
     <i>Username and password required</i>
 </body>

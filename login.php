@@ -4,15 +4,14 @@ session_start();
 <html>
 
 <body>
-<h2>Login</h2>
-    <br>
+    <h2>Login</h2>
     <form name="login" method="POST" action="login.php" onsubmit="return validateform()">
         <label for="username1">Username</label>
         <input type="text" name="usernamel" id="usernamel" class="input-login" required>
-        <br />
+        <br /><br />
         <label for="password1">Password</label>
         <input type="password" name="passwordl" id="passwordl" class="input-login" required>
-        <br />
+        <br /><br />
         <p>Don't have an account? <a href="register.php">Register</a></p><br>
         <button id="submit" type="submit">Login</button>
     </form>
@@ -101,5 +100,6 @@ function preShow( $arr, $returnAsString=false ) {
     echo $ret; 
 }
 ?>
-    </body>
+</body>
+
 </html>

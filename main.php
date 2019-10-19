@@ -3,17 +3,16 @@
 session_start();
 
 ini_set("allow_url_fopen", 1);$jsonDecode = json_decode($jsonData, TRUE);
+//game news
 $csgo_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=730&count=10&maxlength=300&format=json';
 $rl_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=252950&count=10&maxlength=300&format=json'; 
+
+//Login user stats
 $userStats_url = 'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid='.$_SESSION['steamid'].'&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json';
- 
-//http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid=76561198096743032&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json
-
-//http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids=76561198096743032
-        $jsonStats = file_get_contents($userStats_url);
-        file_put_contents('gs://a2cloud_userstats/userStats.json', $jsonStats);
-        $userstatsdecoded = json_decode($jsonStats);      
-
+//storing User stats in json file to use in BigQuery
+$jsonStats = file_get_contents($userStats_url);
+file_put_contents('gs://a2cloud_userstats/userStats.json', $jsonStats);
+$userstatsdecoded = json_decode($jsonStats);       
 
 function preShow( $arr, $returnAsString=false ) {
   $ret  = '<pre>' . print_r($arr, true) . '</pre>';
@@ -47,7 +46,7 @@ function preShow( $arr, $returnAsString=false ) {
       html, body {
         height: 80%;
         margin: 0;
-        padding: 20%;
+        padding: 0;
       }
     </style>
 
@@ -61,7 +60,7 @@ function preShow( $arr, $returnAsString=false ) {
         $userdecoded = json_decode($json);
         
         //Showing the details of the logged in user with there steamID
-    echo "<h1>" . $userdecoded->response->players[0]->personaname ."</h1>";
+    echo "<h1>Welcome " . $userdecoded->response->players[0]->personaname ."</h1>";
          echo "<label><strong> Steam ID: </strong></label> <br />";
     echo $userdecoded->response->players[0]->steamid. "<br />";
         echo "<label><strong> Username: </strong></label> <br />";
@@ -77,7 +76,12 @@ function preShow( $arr, $returnAsString=false ) {
             //au: 76561198096743032
     }
 }
-    ?>
+    
+            echo "<h1>" . $userdecoded->response->players[0]->personaname ."'s CSGO Statistics</h1>";
+            for($i; $i < 5; $i++){
+            preShow($userstatsdecoded->playerstats->stats[$i]);   
+            }
+            ?>
     <h2>Find Steam Player</h2>
     <!--This form will allow the user to search any player using there steam ID-->
     <div class="form">
@@ -86,15 +90,17 @@ function preShow( $arr, $returnAsString=false ) {
             <br>
             <input type='text' id='usersteamid' name='usersteamid'>
             <button type='submit' id='submit1' name='submit1'>Search</button>
-            <p><i>example steam id: 76561198096743032</i></p>
+            <p><i>AU steam id: 76561198096743032</i></p>
+            <p><i>EU steam id: 76561197994575504</i></p>
+            <p><i>US steam id: 76561198108540186</i></p>
         </form>
         <?php
         if(isset($_POST['submit1'])){
     if(!empty($_POST['usersteamid'])){
+        //user profile info
         $user_url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids='.$_POST['usersteamid'];   
         $json = file_get_contents($user_url);
         $decoded = json_decode($json);
-        //preShow($decoded);
         
         //Display the user in relation to there steamID
         echo "<label><strong> Steam ID: </strong></label> <br />";
@@ -110,7 +116,6 @@ function preShow( $arr, $returnAsString=false ) {
             //example us: 76561198108540186
             //example au: 76561198096743032
    
-        echo "heeeeey: " . $decoded->response->players[0]->loccountrycode;
         if ($decoded->response->players[0]->loccountrycode == "AU"){
            $LOC = "lat: -37.8136, lng: 144.9631"; // AU
         }elseif ($decoded->response->players[0]->loccountrycode == "US"){
@@ -120,23 +125,23 @@ function preShow( $arr, $returnAsString=false ) {
         }
     }
     }
-        
-   
         ?>
-         <div class="map">
-             <!--Displaying the google map-->
-    <div id="map"></div>
+            <!--Displaying the google map-->
+            <div id="map"></div>
+        <script>
+            var map;
+
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {
+                        <?php echo $LOC ?>
+                    },
+                    zoom: 4
+                });
+            }
+
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7ApZYfrCx_mmzhKjvQlDiOAkaTLAQcz8&callback=initMap"></script>
         </div>
-    <script>
-        var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {<?php echo $LOC ?>},
-          zoom: 4
-        });
-      }
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7ApZYfrCx_mmzhKjvQlDiOAkaTLAQcz8&callback=initMap"></script>
-    </div>
-</body>
+    </body>
 </html>
