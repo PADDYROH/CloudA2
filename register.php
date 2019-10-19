@@ -19,6 +19,7 @@ session_start();
         <br /><br />
         <button id="register" type="submit" onclick="IsEmpty()" disabled>Register</button>
     </form>
+    <p><i>example steam id: 76561198096743032</i></p>
     <script type="text/jscript">
         function CheckPassword() {
             password = document.getElementById('password').value;

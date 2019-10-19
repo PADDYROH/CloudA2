@@ -7,11 +7,12 @@ $csgo_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=7
 $rl_url = 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=252950&count=10&maxlength=300&format=json'; 
 $userStats_url = 'http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid='.$_SESSION['steamid'].'&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json';
  
-        $jsonStats = file_get_contents($userStats_url);
-        file_put_contents('gs://a2cloud-bucket/userStats.json', $jsonStats);
-        $userstatsdecoded = json_decode($jsonStats);
+//http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamid=76561198096743032&fbclid=IwAR0DJNGLibzm0p92u5TDZKsuQpRxc4mzwAqPWBZQow-r57Yhy_OnO3R0Jfs&format=json
 
-//preShow($decoded);
+//http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=C1A9D93B831592B9BA3AF5A0D7F24CD9&steamids=76561198096743032
+        $jsonStats = file_get_contents($userStats_url);
+        file_put_contents('gs://a2cloud_userstats/userStats.json', $jsonStats);
+        $userstatsdecoded = json_decode($jsonStats);      
 
 
 function preShow( $arr, $returnAsString=false ) {
@@ -41,12 +42,12 @@ function preShow( $arr, $returnAsString=false ) {
        * element that contains the map. */
       #map {
         height: 50%;
-          width: 50%;
+          width: 30%;
       }
       html, body {
-        height: 100%;
+        height: 80%;
         margin: 0;
-        padding: 0;
+        padding: 20%;
       }
     </style>
 
@@ -59,8 +60,9 @@ function preShow( $arr, $returnAsString=false ) {
         file_put_contents('gs://a2cloud-bucket/steamusers.json', $json);
         $userdecoded = json_decode($json);
         
+        //Showing the details of the logged in user with there steamID
     echo "<h1>" . $userdecoded->response->players[0]->personaname ."</h1>";
-         echo "<label><strong> Steam ID: </strong></label>";
+         echo "<label><strong> Steam ID: </strong></label> <br />";
     echo $userdecoded->response->players[0]->steamid. "<br />";
         echo "<label><strong> Username: </strong></label> <br />";
    echo $userdecoded->response->players[0]->personaname . "<br />";
@@ -77,6 +79,7 @@ function preShow( $arr, $returnAsString=false ) {
 }
     ?>
     <h2>Find Steam Player</h2>
+    <!--This form will allow the user to search any player using there steam ID-->
     <div class="form">
         <form method="POST" action="main.php">
             <label>Enter: Steam ID</label>
@@ -93,7 +96,8 @@ function preShow( $arr, $returnAsString=false ) {
         $decoded = json_decode($json);
         //preShow($decoded);
         
-        echo "<label><strong> Steam ID: </strong></label>";
+        //Display the user in relation to there steamID
+        echo "<label><strong> Steam ID: </strong></label> <br />";
     echo $decoded->response->players[0]->steamid. "<br />";
         echo "<label><strong> Username: </strong></label> <br />";
    echo $decoded->response->players[0]->personaname . "<br />";
@@ -103,20 +107,31 @@ function preShow( $arr, $returnAsString=false ) {
      echo '<img src= '.$decoded->response->players[0]->avatarmedium . "><br />";
         echo "<label><strong> Profile url: </strong></label> <br />";
     echo '<a href=" '. $decoded->response->players[0]->profileurl.'">' . $decoded->response->players[0]->profileurl.' </a> <br />';
-    
-            //us: 76561198108540186
-            //au: 76561198096743032
+            //example us: 76561198108540186
+            //example au: 76561198096743032
+   
+        echo "heeeeey: " . $decoded->response->players[0]->loccountrycode;
+        if ($decoded->response->players[0]->loccountrycode == "AU"){
+           $LOC = "lat: -37.8136, lng: 144.9631"; // AU
+        }elseif ($decoded->response->players[0]->loccountrycode == "US"){
+           $LOC = "lat: 37.0902, lng: 995.7129"; //us
+        }else{
+           $LOC = "lat: 46.5260, lng: -2.2551"; //eu
+        }
     }
-}
+    }
+        
+   
         ?>
          <div class="map">
+             <!--Displaying the google map-->
     <div id="map"></div>
         </div>
     <script>
         var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -37.8136, lng: 144.9631},
+          center: {<?php echo $LOC ?>},
           zoom: 4
         });
       }
