@@ -1,1 +1,17 @@
 /*Stylesheet*/
+  body {
+    background: lightcyan;
+  }
+
+  h1{
+    font-size: 20px;
+  }
+  .form{
+    font-size: 15px;
+    font-family: Arial;
+    padding:50px;
+    text-align: auto;
+  }
+.map{
+    padding:20px;
+}

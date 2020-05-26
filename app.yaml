@@ -1,0 +1,22 @@
+runtime: php55
+api_version: 1
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+  
+- url: /script.js
+  script: script.js
+  
+- url: /main.php
+  script: main.php  
+ 
+- url: /login.php
+  script: login.php
+  
+- url: /register.php
+  script: register.php
+
+- url: /.*
+  script: login.php
+  
